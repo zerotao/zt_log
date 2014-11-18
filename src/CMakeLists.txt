@@ -13,8 +13,8 @@ set(ZT_LOG_HDRS
 
 add_library(zt_log ${ZT_LOG_SRCS} ${ZT_LOG_HDRS})
 
-# set(log_INSTALL_HEADERS zt_log.h)
-# set(log_INSTALL_TARGETS zt_log)
+set(log_INSTALL_HEADERS ${ZT_LOG_HDRS})
+set(log_INSTALL_TARGETS zt_log)
 
 if (WIN32)
     if(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
@@ -30,4 +30,4 @@ install(TARGETS ${log_INSTALL_TARGETS}
         ARCHIVE DESTINATION lib
         LIBRARY DESTINATION lib)
 
-install(FILES ${log_INSTALL_HEADERS} DESTINATION include)
+install(FILES ${LOG_INSTALL_HEADERS} DESTINATION include)
