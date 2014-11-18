@@ -1,20 +1,21 @@
-set(ZT_LOG_SRCS
+set(LOG_SOURCES
     zt_log.c
     zt_log/log_file.c zt_log/log_private.c
     zt_log/log_stderr.c zt_log/log_syslog.c
 )
 
-set(ZT_LOG_HDRS
+set(LOG_HEADERS
     zt_log.h
+)
+
+set(LOG_LOG_HEADERS
     zt_log/log_file.h zt_log/log_interface.h
     zt_log/log_private.h zt_log/log_stderr.h
     zt_log/log_syslog.h
 )
 
-add_library(zt_log ${ZT_LOG_SRCS} ${ZT_LOG_HDRS})
+add_library(zt_log ${LOG_SOURCES} ${LOG_HEADERS} ${LOG_LOG_HEADERS})
 
-set(LOG_INSTALL_HEADERS ${ZT_LOG_HDRS})
-set(LOG_INSTALL_TARGETS zt_log)
 
 if (WIN32)
     if(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
@@ -26,8 +27,10 @@ if (WIN32)
     endif()
 endif(WIN32)
 
-install(TARGETS ${LOG_INSTALL_TARGETS}
+install(TARGETS zt_log
         ARCHIVE DESTINATION lib
         LIBRARY DESTINATION lib)
 
-install(FILES ${LOG_INSTALL_HEADERS} DESTINATION include)
+    install(FILES ${LOG_HEADERS} DESTINATION include)
+    install(FILES ${LOG_LOG_HEADERS} DESTINATION include/zt_log)
+
