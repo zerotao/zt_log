@@ -309,16 +309,21 @@ zt_log_close(zt_log_ty * log) {
 
 void
 zt_log_set_progname(zt_log_ty * log, char * progname) {
-    if (!log || !progname) {
+    if (!progname) {
         return;
     }
+
+    if (!log) {
+        log = zt_log_get_logger();
+    }
+
     log->progname = progname;
 }
 
 char *
 zt_log_get_progname(zt_log_ty * log) {
     if (!log) {
-        return NULL;
+        log = zt_log_get_logger();
     }
     if (log->progname == NULL) {
         return "*progname*";
