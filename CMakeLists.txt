@@ -15,6 +15,16 @@ set(BUILD_SHARED_LIBS ON)
 
 include(CheckDefIncludeFiles)
 
+find_package(Threads)
+if (CMAKE_USE_PTHREADS_INIT)
+    # FIXME: require pthreads
+    SET(HAVE_PTHREADS 1)
+    ADD_DEFINITIONS(-DHAVE_PTHREADS)
+
+    SET(WITH_THREADS 1)
+    ADD_DEFINITIONS(-DWITH_THREADS)
+endif (CMAKE_USE_PTHREADS_INIT)
+
 check_def_include_files(stdint.h HAVE_STDINT_H)
 check_def_include_files(string.h HAVE_STRING_H)
 check_def_include_files(strings.h HAVE_STRINGS_H)

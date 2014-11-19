@@ -16,6 +16,9 @@ set(LOG_LOG_HEADERS
 
 add_library(zt_log ${LOG_SOURCES} ${LOG_HEADERS} ${LOG_LOG_HEADERS})
 
+if(HAVE_PTHREADS)
+    target_link_libraries(zt_log ${CMAKE_THREAD_LIBS_INIT})
+endif(HAVE_PTHREADS)
 
 if (WIN32)
     if(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)

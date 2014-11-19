@@ -36,7 +36,7 @@ log_atexit(void * data) {
 }
 
 /* #undef HAVE_PTHREAD_H */
-#ifdef HAVE_PTHREAD_H
+#ifdef HAVE_PTHREADS
 static pthread_mutex_t log_mutex    = PTHREAD_MUTEX_INITIALIZER;
 
 static pthread_key_t   ctx_key;
@@ -48,9 +48,9 @@ make_ctx_key(void) {
 }
 
 #define CTX_STATIC
-#else /* ifdef HAVE_PTHREAD_H */
+#else /* ifdef HAVE_PTHREADS */
 #define CTX_STATIC static
-#endif /* HAVE_PTHREAD_H */
+#endif /* HAVE_PTHREADS */
 
 typedef struct zt_log_ctx_s zt_log_ctx_ty;
 struct zt_log_ctx_s {
@@ -68,18 +68,18 @@ zt_log_get_ctx(void) {
     CTX_STATIC zt_log_ctx_ty * log_ctx_ptr = NULL;
 
     if (!log_ctx_ptr) {
-#ifdef HAVE_PTHREAD_H
+#ifdef HAVE_PTHREADS
         (void)pthread_once(&ctx_key_once, make_ctx_key);
         if ((log_ctx_ptr = pthread_getspecific(ctx_key)) == NULL) {
-#endif /* HAVE_PTHREAD_H */
+#endif /* HAVE_PTHREADS */
         if ((log_ctx_ptr = (zt_log_ctx_ty *)calloc(1, sizeof(zt_log_ctx_ty))) == NULL) {
             fprintf(stderr, "Could not allocate memory for log context\n");
             exit(1);
         }
-#ifdef HAVE_PTHREAD_H
+#ifdef HAVE_PTHREADS
         pthread_setspecific(ctx_key, log_ctx_ptr);
     }
-#endif /* HAVE_PTHREAD_H */
+#endif /* HAVE_PTHREADS */
     }
     return log_ctx_ptr;
 }
@@ -87,7 +87,7 @@ zt_log_get_ctx(void) {
 static zt_log_ty *
 zt_log_get_logger(void) {
     if (!log_default_ptr) {
-#ifdef HAVE_PTHREAD_H
+#ifdef HAVE_PTHREADS
         pthread_mutex_lock(&log_mutex);
 #endif
         /* second check is just to avoid having to have a mutex lock
@@ -101,7 +101,7 @@ zt_log_get_logger(void) {
             forced = 1;
             /* zt_atexit(log_atexit, log_default_ptr); */
         }
-#ifdef HAVE_PTHREAD_H
+#ifdef HAVE_PTHREADS
         pthread_mutex_unlock(&log_mutex);
 #endif
     }
@@ -113,14 +113,14 @@ static zt_log_ty *
 zt_log_set_logger(zt_log_ty * log) {
     zt_log_ty   * last;
 
-#ifdef HAVE_PTHREAD_H
+#ifdef HAVE_PTHREADS
     pthread_mutex_lock(&log_mutex);
 #endif
 
     last = log_default_ptr;
     log_default_ptr = log;
 
-#ifdef HAVE_PTHREAD_H
+#ifdef HAVE_PTHREADS
     pthread_mutex_unlock(&log_mutex);
 #endif
     return last;
